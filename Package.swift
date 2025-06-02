@@ -16,6 +16,25 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "geographiclib-swift"),
+        .target(
+            name: "CGeographicLib",
+            dependencies: [],
+            exclude: [
+                "./README.md",
+                "./distrib-C",
+                "./doc",
+                "./proj-example",
+                "./src/CMakeLists.txt",
+                "./tests",
+                "./tools",
+                "./CMakeLists.txt",
+                "./HOWTO-RELEASE.txt",
+                "./LICENSE.txt",
+            ],
+            sources: ["./src"],
+            publicHeadersPath: "./src",
+            cSettings: [.headerSearchPath("./src")]
+        ),
         .testTarget(
             name: "geographiclib-swiftTests",
             dependencies: ["geographiclib-swift"]
