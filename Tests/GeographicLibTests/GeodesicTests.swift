@@ -14,8 +14,8 @@ struct GeodesicTests {
     @Test("WGS-84 default initialization")
     func testWGS84DefaultInit() {
         let geodesic = Geodesic()
-        #expect(geodesic.equatorialRadius == Geodesic.wgs84EquatorialRadius)
-        #expect(geodesic.flattening == Geodesic.wgs84Flattening)
+        #expect(geodesic.equatorialRadius == Ellipsoid.wgs84.equatorialRadius)
+        #expect(geodesic.flattening == Ellipsoid.wgs84.flattening)
     }
     
     @Test("Custom ellipsoid initialization")
@@ -97,24 +97,6 @@ struct GeodesicTests {
         // Check consistency
         #expect(abs(inverseResult.distance - distance) < 0.001) // within 1mm
         #expect(abs(inverseResult.azimuth1 - azimuth1) < 1e-10) // very small angle difference
-    }
-    
-    @Test("Common ellipsoids")
-    func testCommonEllipsoids() {
-        // Test WGS-84
-        let wgs84 = Geodesic.wgs84
-        #expect(wgs84.equatorialRadius == 6378137.0)
-        #expect(wgs84.flattening == 1.0/298.257223563)
-        
-        // Test GRS-80
-        let grs80 = Geodesic.grs80
-        #expect(grs80.equatorialRadius == 6378137.0)
-        #expect(grs80.flattening == 1.0/298.257222101)
-        
-        // Test sphere
-        let sphere = Geodesic.sphere
-        #expect(sphere.equatorialRadius == 6371000.0)
-        #expect(sphere.flattening == 0.0)
     }
     
     @Test("Negative distance")

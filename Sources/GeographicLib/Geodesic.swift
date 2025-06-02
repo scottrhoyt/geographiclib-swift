@@ -18,19 +18,11 @@ import CGeographicLib
 public struct Geodesic: Sendable {
     internal var geod: geod_geodesic
     
-    // MARK: - Constants
-    
-    /// WGS-84 equatorial radius in meters
-    public static let wgs84EquatorialRadius: Double = 6378137.0
-    
-    /// WGS-84 flattening
-    public static let wgs84Flattening: Double = 1.0/298.257223563
-    
     // MARK: - Initialization
     
-    /// Initialize with WGS-84 ellipsoid parameters
-    public init() {
-        self.init(equatorialRadius: Self.wgs84EquatorialRadius, flattening: Self.wgs84Flattening)
+    /// Initialize with an ``Ellipsoid``, WGS-84 by default
+    public init(_ ellipsoid: Ellipsoid = .wgs84) {
+        self.init(equatorialRadius: ellipsoid.equatorialRadius, flattening: ellipsoid.flattening)
     }
     
     /// Initialize with custom ellipsoid parameters
@@ -129,17 +121,4 @@ public extension Geodesic {
         
         return InverseResult(distance: s12, azimuth1: azi1, azimuth2: azi2)
     }
-}
-
-// MARK: - Common Ellipsoids
-
-public extension Geodesic {
-    /// WGS-84 ellipsoid (default)
-    static let wgs84 = Geodesic()
-    
-    /// GRS-80 ellipsoid
-    static let grs80 = Geodesic(equatorialRadius: 6378137.0, flattening: 1.0/298.257222101)
-    
-    /// Unit sphere
-    static let sphere = Geodesic(equatorialRadius: 6371000.0, flattening: 0.0)
 }

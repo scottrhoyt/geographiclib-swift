@@ -126,7 +126,7 @@ struct PolygonTests {
     
     @Test("Polygon with custom ellipsoid")
     func testPolygonCustomEllipsoid() {
-        let sphericalGeodesic = Geodesic.sphere
+        let sphericalGeodesic = Geodesic(.sphere)
         var polygon = Polygon(geodesic: sphericalGeodesic)
         
         // Create a triangle on a sphere
