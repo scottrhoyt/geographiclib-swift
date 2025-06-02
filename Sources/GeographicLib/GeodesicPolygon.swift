@@ -1,5 +1,5 @@
 //
-//  Polygon.swift
+//  GeodesicPolygon.swift
 //  GeographicLib
 //
 //  Created by Scott Hoyt on 6/1/25.
@@ -12,7 +12,7 @@ import CGeographicLib
 ///
 /// This struct accumulates vertices and edges to compute the perimeter and area
 /// of a geodesic polygon on an ellipsoid.
-public struct Polygon: Sendable {
+public struct GeodesicPolygon: Sendable {
     private var polygon: geod_polygon
     private let geodesic: Geodesic
     private let isPolyline: Bool
@@ -41,7 +41,7 @@ public struct Polygon: Sendable {
     /// - Parameters:
     ///   - geodesic: The geodesic object defining the ellipsoid (default: WGS-84)
     ///   - polyline: If true, creates a polyline (no area calculation); if false, creates a polygon
-    public init(geodesic: Geodesic = Geodesic(), polyline: Bool = false) {
+    public init(geodesic: Geodesic = Geodesic(.wgs84), polyline: Bool = false) {
         self.geodesic = geodesic
         self.isPolyline = polyline
         self.polygon = geod_polygon()

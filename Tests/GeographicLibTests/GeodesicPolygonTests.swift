@@ -1,5 +1,5 @@
 //
-//  PolygonTests.swift
+//  GeodesicPolygonTests.swift
 //  GeographicLib
 //
 //  Created by Scott Hoyt on 6/1/25.
@@ -9,11 +9,11 @@ import Foundation
 @testable import GeographicLib
 import Testing
 
-struct PolygonTests {
+struct GeodesicPolygonTests {
     
     @Test("Basic polygon initialization")
     func testPolygonInitialization() {
-        var polygon = Polygon()
+        var polygon = GeodesicPolygon()
         #expect(polygon.pointCount == 0)
         
         polygon.addPoint(latitude: 0, longitude: 0)
@@ -24,7 +24,7 @@ struct PolygonTests {
     
     @Test("Triangle area calculation")
     func testTriangleArea() {
-        var polygon = Polygon()
+        var polygon = GeodesicPolygon()
         
         // Create a triangle at the equator
         polygon.addPoint(latitude: 0, longitude: 0)
@@ -43,7 +43,7 @@ struct PolygonTests {
     
     @Test("Polyline length calculation")
     func testPolylineLength() {
-        var polyline = Polygon(polyline: true)
+        var polyline = GeodesicPolygon(polyline: true)
         
         // Create a path along the equator
         polyline.addPoint(latitude: 0, longitude: 0)
@@ -61,7 +61,7 @@ struct PolygonTests {
     
     @Test("Add edge to polygon")
     func testAddEdge() {
-        var polygon = Polygon()
+        var polygon = GeodesicPolygon()
         
         polygon.addPoint(latitude: 0, longitude: 0)
         polygon.addEdge(azimuth: 90, distance: 1_000_000) // 1000 km east
@@ -73,7 +73,7 @@ struct PolygonTests {
     
     @Test("Clear polygon")
     func testClearPolygon() {
-        var polygon = Polygon()
+        var polygon = GeodesicPolygon()
         
         polygon.addPoint(latitude: 0, longitude: 0)
         polygon.addPoint(latitude: 1, longitude: 1)
@@ -85,7 +85,7 @@ struct PolygonTests {
     
     @Test("Test point without adding")
     func testTestPoint() {
-        var polygon = Polygon()
+        var polygon = GeodesicPolygon()
         
         polygon.addPoint(latitude: 0, longitude: 0)
         polygon.addPoint(latitude: 0, longitude: 1)
@@ -127,7 +127,7 @@ struct PolygonTests {
     @Test("Polygon with custom ellipsoid")
     func testPolygonCustomEllipsoid() {
         let sphericalGeodesic = Geodesic(.sphere)
-        var polygon = Polygon(geodesic: sphericalGeodesic)
+        var polygon = GeodesicPolygon(geodesic: sphericalGeodesic)
         
         // Create a triangle on a sphere
         polygon.addPoint(latitude: 0, longitude: 0)
@@ -143,7 +143,7 @@ struct PolygonTests {
     
     @Test("Clockwise vs counter-clockwise")
     func testClockwiseOrientation() {
-        var polygon = Polygon()
+        var polygon = GeodesicPolygon()
         
         // Counter-clockwise square
         polygon.addPoint(latitude: 0, longitude: 0)
