@@ -16,7 +16,7 @@ import CGeographicLib
 ///
 /// The default ellipsoid is WGS-84, but custom ellipsoids can be specified.
 public struct Geodesic: Sendable {
-    private var geod: geod_geodesic
+    internal var geod: geod_geodesic
     
     // MARK: - Constants
     
