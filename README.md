@@ -3,7 +3,7 @@
 This is a Swift library to solve geodesic problems on an ellipsoid model of
 the earth.
 
-This is a Swift wrapper around the C implementation of the geodesic routines
+This is a Swift wrapper around the [C implementation](https://github.com/geographiclib/geographiclib-c) of the geodesic routines
 from [GeographicLib](https://geographiclib.sourceforge.io).
 
 Licensed under the MIT/X11 License; see
