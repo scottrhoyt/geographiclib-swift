@@ -53,13 +53,13 @@ public extension Geodesic {
     /// Result of a direct geodesic calculation
     struct DirectResult {
         /// Latitude of the destination point in degrees
-        public let latitude2: Double
+        public let latitude: Double
         
         /// Longitude of the destination point in degrees
-        public let longitude2: Double
+        public let longitude: Double
         
         /// Forward azimuth at the destination point in degrees
-        public let azimuth2: Double
+        public let azimuth: Double
     }
     
     /// Solve the direct geodesic problem.
@@ -67,21 +67,21 @@ public extension Geodesic {
     /// Given a starting point, initial azimuth, and distance, calculate the destination point and final azimuth.
     ///
     /// - Parameters:
-    ///   - latitude1: Starting latitude in degrees [-90, 90]
-    ///   - longitude1: Starting longitude in degrees [-180, 180]
-    ///   - azimuth1: Initial azimuth in degrees [-180, 180]
+    ///   - latitude: Starting latitude in degrees [-90, 90]
+    ///   - longitude: Starting longitude in degrees [-180, 180]
+    ///   - azimuth: Initial azimuth in degrees [-180, 180]
     ///   - distance: Distance in meters (can be negative)
     /// - Returns: The destination point and final azimuth
-    func direct(latitude1: Double, longitude1: Double, azimuth1: Double, distance: Double) -> DirectResult {
-        var lat2: Double = 0
-        var lon2: Double = 0
-        var azi2: Double = 0
+    func direct(latitude: Double, longitude: Double, azimuth: Double, distance: Double) -> DirectResult {
+        var latitude2: Double = 0
+        var longitude2: Double = 0
+        var azimuth2: Double = 0
         
         withUnsafePointer(to: geod) { geodPtr in
-            geod_direct(geodPtr, latitude1, longitude1, azimuth1, distance, &lat2, &lon2, &azi2)
+            geod_direct(geodPtr, latitude, longitude, azimuth, distance, &latitude2, &longitude2, &azimuth2)
         }
         
-        return DirectResult(latitude2: lat2, longitude2: lon2, azimuth2: azi2)
+        return DirectResult(latitude: latitude2, longitude: longitude2, azimuth: azimuth2)
     }
 }
 

@@ -34,11 +34,11 @@ struct GeodesicLineTests {
         let position = line.position(distance: 1_000_000.0)
         
         // Should match direct calculation
-        let direct = geodesic.direct(latitude1: 40.64, longitude1: -73.78, azimuth1: 45.0, distance: 1_000_000.0)
+        let direct = geodesic.direct(latitude: 40.64, longitude: -73.78, azimuth: 45.0, distance: 1_000_000.0)
         
-        #expect(abs(position.latitude2 - direct.latitude2) < 1e-12)
-        #expect(abs(position.longitude2 - direct.longitude2) < 1e-12)
-        #expect(abs(position.azimuth2 - direct.azimuth2) < 1e-12)
+        #expect(abs(position.latitude2 - direct.latitude) < 1e-12)
+        #expect(abs(position.longitude2 - direct.longitude) < 1e-12)
+        #expect(abs(position.azimuth2 - direct.azimuth) < 1e-12)
     }
     
     @Test("Direct line initialization")
