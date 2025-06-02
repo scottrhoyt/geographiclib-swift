@@ -4,18 +4,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "geographiclib-swift",
+    name: "GeographicLib",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "geographiclib-swift",
-            targets: ["geographiclib-swift"]),
+            name: "GeographicLib",
+            targets: ["GeographicLib"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "geographiclib-swift"),
+            name: "GeographicLib"),
         .target(
             name: "CGeographicLib",
             dependencies: [],
@@ -36,8 +36,8 @@ let package = Package(
             cSettings: [.headerSearchPath("./src")]
         ),
         .testTarget(
-            name: "geographiclib-swiftTests",
-            dependencies: ["geographiclib-swift"]
+            name: "GeographicLibTests",
+            dependencies: ["GeographicLib"]
         ),
     ]
 )
