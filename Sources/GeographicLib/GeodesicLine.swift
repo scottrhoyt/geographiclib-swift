@@ -18,17 +18,17 @@ public struct GeodesicLine: Sendable {
     // MARK: - Properties
     
     /// Starting latitude in degrees
-    public var latitude1: Double {
+    public var latitude: Double {
         return line.lat1
     }
     
     /// Starting longitude in degrees
-    public var longitude1: Double {
+    public var longitude: Double {
         return line.lon1
     }
     
     /// Starting azimuth in degrees
-    public var azimuth1: Double {
+    public var azimuth: Double {
         return line.azi1
     }
     
@@ -53,15 +53,15 @@ public struct GeodesicLine: Sendable {
     ///
     /// - Parameters:
     ///   - geodesic: The geodesic object defining the ellipsoid
-    ///   - latitude1: Starting latitude in degrees [-90, 90]
-    ///   - longitude1: Starting longitude in degrees [-180, 180]
-    ///   - azimuth1: Starting azimuth in degrees [-180, 180]
+    ///   - latitude: Starting latitude in degrees [-90, 90]
+    ///   - longitude: Starting longitude in degrees [-180, 180]
+    ///   - azimuth: Starting azimuth in degrees [-180, 180]
     ///   - capabilities: Capabilities for calculations (default: standard)
-    public init(geodesic: Geodesic, latitude1: Double, longitude1: Double, azimuth1: Double, 
+    public init(geodesic: Geodesic, latitude: Double, longitude: Double, azimuth: Double,
                 capabilities: GeodesicCapability = .standard) {
         self.line = geod_geodesicline()
         withUnsafePointer(to: geodesic.geod) { geodPtr in
-            geod_lineinit(&self.line, geodPtr, latitude1, longitude1, azimuth1, capabilities.rawValue)
+            geod_lineinit(&self.line, geodPtr, latitude, longitude, azimuth, capabilities.rawValue)
         }
     }
     
@@ -70,13 +70,13 @@ public struct GeodesicLine: Sendable {
     /// Result of a position calculation along a geodesic line
     public struct PositionResult {
         /// Latitude of the point in degrees
-        public let latitude2: Double
+        public let latitude: Double
         
         /// Longitude of the point in degrees
-        public let longitude2: Double
+        public let longitude: Double
         
         /// Forward azimuth at the point in degrees
-        public let azimuth2: Double
+        public let azimuth: Double
     }
     
     /// Compute a position along the geodesic line.
@@ -84,27 +84,27 @@ public struct GeodesicLine: Sendable {
     /// - Parameter distance: Distance from the starting point in meters
     /// - Returns: The position and azimuth at the given distance
     public func position(distance: Double) -> PositionResult {
-        var lat2: Double = 0
-        var lon2: Double = 0
-        var azi2: Double = 0
+        var latitude: Double = 0
+        var longitude: Double = 0
+        var azimuth: Double = 0
         
         withUnsafePointer(to: line) { linePtr in
-            geod_position(linePtr, distance, &lat2, &lon2, &azi2)
+            geod_position(linePtr, distance, &latitude, &longitude, &azimuth)
         }
         
-        return PositionResult(latitude2: lat2, longitude2: lon2, azimuth2: azi2)
+        return PositionResult(latitude: latitude, longitude: longitude, azimuth: azimuth)
     }
     
     /// General position result with additional computed values
     public struct GeneralPositionResult {
         /// Latitude of the point in degrees
-        public let latitude2: Double
+        public let latitude: Double
         
         /// Longitude of the point in degrees
-        public let longitude2: Double
+        public let longitude: Double
         
         /// Forward azimuth at the point in degrees
-        public let azimuth2: Double
+        public let azimuth: Double
         
         /// Arc length from point 1 to point 2 in degrees
         public let arc: Double
@@ -132,30 +132,30 @@ public struct GeodesicLine: Sendable {
     ///   - distanceOrArc: Distance in meters or arc in degrees depending on flags
     /// - Returns: The position and requested values
     public func generalPosition(flags: GeodesicFlags = .none, distanceOrArc: Double) -> GeneralPositionResult {
-        var lat2: Double = 0
-        var lon2: Double = 0
-        var azi2: Double = 0
-        var s12: Double = 0
-        var m12: Double = 0
-        var M12: Double = 0
-        var M21: Double = 0
-        var S12: Double = 0
+        var latitude: Double = 0
+        var longitude2: Double = 0
+        var azimuth: Double = 0
+        var distance: Double = 0
+        var reducedLength: Double = 0
+        var scale12: Double = 0
+        var scale21: Double = 0
+        var area: Double = 0
         
-        let a12 = withUnsafePointer(to: line) { linePtr in
+        let arc = withUnsafePointer(to: line) { linePtr in
             geod_genposition(linePtr, flags.rawValue, distanceOrArc,
-                           &lat2, &lon2, &azi2, &s12, &m12, &M12, &M21, &S12)
+                           &latitude, &longitude2, &azimuth, &distance, &reducedLength, &scale12, &scale21, &area)
         }
         
         return GeneralPositionResult(
-            latitude2: lat2,
-            longitude2: lon2,
-            azimuth2: azi2,
-            arc: a12,
-            distance: capabilities.contains(.distance) ? s12 : nil,
-            reducedLength: capabilities.contains(.reducedLength) ? m12 : nil,
-            scale12: capabilities.contains(.geodesicScale) ? M12 : nil,
-            scale21: capabilities.contains(.geodesicScale) ? M21 : nil,
-            area: capabilities.contains(.area) ? S12 : nil
+            latitude: latitude,
+            longitude: longitude2,
+            azimuth: azimuth,
+            arc: arc,
+            distance: capabilities.contains(.distance) ? distance : nil,
+            reducedLength: capabilities.contains(.reducedLength) ? reducedLength : nil,
+            scale12: capabilities.contains(.geodesicScale) ? scale12 : nil,
+            scale21: capabilities.contains(.geodesicScale) ? scale21 : nil,
+            area: capabilities.contains(.area) ? area : nil
         )
     }
 }
@@ -166,35 +166,35 @@ public extension Geodesic {
     /// Create a geodesic line for efficient position calculations.
     ///
     /// - Parameters:
-    ///   - latitude1: Starting latitude in degrees [-90, 90]
-    ///   - longitude1: Starting longitude in degrees [-180, 180]
-    ///   - azimuth1: Starting azimuth in degrees [-180, 180]
+    ///   - latitude: Starting latitude in degrees [-90, 90]
+    ///   - longitude: Starting longitude in degrees [-180, 180]
+    ///   - azimuth: Starting azimuth in degrees [-180, 180]
     ///   - capabilities: Capabilities for calculations
     /// - Returns: A geodesic line object
-    func line(latitude1: Double, longitude1: Double, azimuth1: Double,
+    func line(latitude: Double, longitude: Double, azimuth: Double,
               capabilities: GeodesicCapability = .standard) -> GeodesicLine {
-        return GeodesicLine(geodesic: self, latitude1: latitude1, longitude1: longitude1,
-                          azimuth1: azimuth1, capabilities: capabilities)
+        return GeodesicLine(geodesic: self, latitude: latitude, longitude: longitude,
+                          azimuth: azimuth, capabilities: capabilities)
     }
     
     /// Create a geodesic line from a direct problem.
     ///
     /// - Parameters:
-    ///   - latitude1: Starting latitude in degrees [-90, 90]
-    ///   - longitude1: Starting longitude in degrees [-180, 180]
-    ///   - azimuth1: Starting azimuth in degrees [-180, 180]
+    ///   - latitude: Starting latitude in degrees [-90, 90]
+    ///   - longitude: Starting longitude in degrees [-180, 180]
+    ///   - azimuth: Starting azimuth in degrees [-180, 180]
     ///   - distance: Distance to reference point in meters
     ///   - capabilities: Capabilities for calculations
     /// - Returns: A geodesic line with the reference point set
-    func directLine(latitude1: Double, longitude1: Double, azimuth1: Double, distance: Double,
+    func directLine(latitude: Double, longitude: Double, azimuth: Double, distance: Double,
                     capabilities: GeodesicCapability = .standard) -> GeodesicLine {
         var line = geod_geodesicline()
         withUnsafePointer(to: geod) { geodPtr in
-            geod_directline(&line, geodPtr, latitude1, longitude1, azimuth1, distance, capabilities.rawValue)
+            geod_directline(&line, geodPtr, latitude, longitude, azimuth, distance, capabilities.rawValue)
         }
         
-        var result = GeodesicLine(geodesic: self, latitude1: latitude1, longitude1: longitude1,
-                                azimuth1: azimuth1, capabilities: capabilities)
+        var result = GeodesicLine(geodesic: self, latitude: latitude, longitude: longitude,
+                                azimuth: azimuth, capabilities: capabilities)
         result.line = line
         return result
     }
@@ -215,8 +215,8 @@ public extension Geodesic {
             geod_inverseline(&line, geodPtr, latitude1, longitude1, latitude2, longitude2, capabilities.rawValue)
         }
         
-        var result = GeodesicLine(geodesic: self, latitude1: latitude1, longitude1: longitude1,
-                                azimuth1: 0, capabilities: capabilities)
+        var result = GeodesicLine(geodesic: self, latitude: latitude1, longitude: longitude1,
+                                azimuth: 0, capabilities: capabilities)
         result.line = line
         return result
     }
