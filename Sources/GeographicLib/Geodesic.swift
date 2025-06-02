@@ -111,14 +111,14 @@ public extension Geodesic {
     ///   - longitude2: Second point longitude in degrees [-180, 180]
     /// - Returns: The distance and azimuths between the points
     func inverse(latitude1: Double, longitude1: Double, latitude2: Double, longitude2: Double) -> InverseResult {
-        var s12: Double = 0
-        var azi1: Double = 0
-        var azi2: Double = 0
+        var distance: Double = 0
+        var azimuth1: Double = 0
+        var azimuth2: Double = 0
         
         withUnsafePointer(to: geod) { geodPtr in
-            geod_inverse(geodPtr, latitude1, longitude1, latitude2, longitude2, &s12, &azi1, &azi2)
+            geod_inverse(geodPtr, latitude1, longitude1, latitude2, longitude2, &distance, &azimuth1, &azimuth2)
         }
         
-        return InverseResult(distance: s12, azimuth1: azi1, azimuth2: azi2)
+        return InverseResult(distance: distance, azimuth1: azimuth1, azimuth2: azimuth2)
     }
 }
