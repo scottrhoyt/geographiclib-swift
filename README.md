@@ -22,6 +22,10 @@ The algorithms are documented in
 * GeographicLib: https://geographiclib.sourceforge.io
 * C implementation: https://github.com/geographiclib/geographiclib-c
 
+## WIP
+
+*The public API of this library is a WIP. It aims to be faithful to map directly to the underlying C libraries while being more idiomatically Swift. Be aware of potential breaking changes to the API until 1.0.0 and pin to specific minor versions if needed.*
+
 ## Installation
 
 ### Swift Package Manager
