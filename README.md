@@ -138,8 +138,6 @@ print("Triangle area: \(result.area!) m²")
 - **Geodesic lines**: Efficiently compute multiple points along a geodesic
 - **Polygon areas**: Calculate areas and perimeters of geodesic polygons
 - **Multiple ellipsoids**: Support for WGS-84, GRS-80, custom ellipsoids, and spheres
-- **High precision**: Accurate to round-off for distances up to 180°
-- **Thread-safe**: All types are immutable and `Sendable`
 
 ## Requirements
 
