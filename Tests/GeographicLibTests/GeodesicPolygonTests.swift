@@ -108,13 +108,28 @@ struct GeodesicPolygonTests {
     
     @Test("Antarctica area from coordinates")
     func testAntarcticaArea() {
-        let latitudes: [Double] = [-72.9, -71.9, -74.9, -74.3, -77.5, -77.4, -71.7, -65.9, -65.7,
-                                   -66.6, -66.9, -69.8, -70.0, -71.0, -77.3, -77.9, -74.7]
-        let longitudes: [Double] = [-74, -102, -102, -131, -163, 163, 172, 140, 113,
-                                    88, 59, 25, -4, -14, -33, -46, -61]
+        let antarctica = [
+            (-72.9, -74.0),
+            (-71.9, -102.0),
+            (-74.9, -102.0),
+            (-74.3, -131.0),
+            (-77.5, -163.0),
+            (-77.4, 163.0),
+            (-71.7, 172.0),
+            (-65.9, 140.0),
+            (-65.7, 113.0),
+            (-66.6, 88.0),
+            (-66.9, 59.0),
+            (-69.8, 25.0),
+            (-70.0, -4.0),
+            (-71.0, -14.0),
+            (-77.3, -33.0),
+            (-77.9, -46.0),
+            (-74.7, -61.0)
+        ]
         
         let geodesic = Geodesic()
-        let (area, perimeter) = geodesic.polygonArea(latitudes: latitudes, longitudes: longitudes)
+        let (area, perimeter) = geodesic.polygonArea(coordinates: antarctica)
         
         // Expected values from GeographicLib implementation
         let expectedArea = 13376856682207.4 // square meters

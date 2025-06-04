@@ -193,25 +193,18 @@ public extension Geodesic {
     /// Compute the area and perimeter of a polygon defined by arrays of coordinates.
     ///
     /// - Parameters:
-    ///   - latitudes: Array of latitudes in degrees [-90, 90]
-    ///   - longitudes: Array of longitudes in degrees [-180, 180]
+    ///   - coordinates: Array of (latitudes, logitude) pairs in degrees ([-90, 90], [-180, 180])
     /// - Returns: A tuple containing the area in square meters and perimeter in meters
     /// - Precondition: latitudes and longitudes must have the same count
-    func polygonArea(latitudes: [Double], longitudes: [Double]) -> (area: Double, perimeter: Double) {
-        precondition(latitudes.count == longitudes.count, "Latitude and longitude arrays must have the same count")
-        
+    func polygonArea(coordinates: [(latitude: Double, longitude: Double)]) -> (area: Double, perimeter: Double) {
         var area: Double = 0
         var perimeter: Double = 0
         
         withUnsafePointer(to: geod) { geodPtr in
-            latitudes.withUnsafeBufferPointer { latPtr in
-                longitudes.withUnsafeBufferPointer { lonPtr in
-                    var mutableLats = Array(latPtr)
-                    var mutableLons = Array(lonPtr)
-                    
-                    geod_polygonarea(geodPtr, &mutableLats, &mutableLons, Int32(latitudes.count), &area, &perimeter)
-                }
-            }
+            var latitudes = coordinates.map { $0.latitude }
+            var longitudes = coordinates.map { $0.longitude }
+            
+            geod_polygonarea(geodPtr, &latitudes, &longitudes, Int32(coordinates.count), &area, &perimeter)
         }
         
         return (area: area, perimeter: perimeter)

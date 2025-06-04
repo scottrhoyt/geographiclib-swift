@@ -136,10 +136,8 @@ let antarctica = [
     (-70.0, -4), (-71.0, -14), (-77.3, -33), (-77.9, -46), (-74.7, -61)
 ]
 
-let (area, perimeter) = geodesic.polygonArea(
-    latitudes: antarctica.map { $0.0 },
-    longitudes: antarctica.map { $0.1 }
-)
+let (area, perimeter) = geodesic.polygonArea(coordinates: antarctica)
+
 print("Antarctica area: \(area) m²")
 print("Antarctica perimeter: \(perimeter) m")
 
