@@ -33,9 +33,31 @@ The algorithms are documented in
 Add the following to your `Package.swift` file:
 
 ```swift
-dependencies: [
-    .package(url: "https://github.com/scottrhoyt/geographiclib-swift.git", from: "0.1.0")
-]
+import PackageDescription
+
+let package = Package(
+    name: "MyPackage",
+
+   /* ... */
+
+    dependencies: [
+        .package(url: "https://github.com/scottrhoyt/geographiclib-swift.git", from: "0.1.0"),
+    ],
+
+   /* ... */
+
+    targets: [
+        .target(
+            name: "MyPackage",
+            dependencies: [
+                .product(name: "GeographicLib", package: "geographiclib-swift")
+            ]
+        )
+    ]
+
+   /* ... */
+
+)
 ```
 
 ## Usage
