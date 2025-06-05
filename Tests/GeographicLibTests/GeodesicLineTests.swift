@@ -68,9 +68,14 @@ struct GeodesicLineTests {
         #expect(line.longitude == lon1)
         
         // The line should connect the two points
-        let inverseResult = geodesic.inverse(latitude1: lat1, longitude1: lon1, latitude2: lat2, longitude2: lon2)
+        let inverseResult = geodesic.inverse(
+            startLatitude: lat1,
+            startLongitude: lon1,
+            endLatitude: lat2,
+            endLongitude: lon2
+        )
         #expect(abs(line.distance - inverseResult.distance) < 0.001)
-        #expect(abs(line.azimuth - inverseResult.azimuth1) < 1e-10)
+        #expect(abs(line.azimuth - inverseResult.startAzimuth) < 1e-10)
     }
     
     @Test("Waypoints along geodesic")
@@ -106,8 +111,10 @@ struct GeodesicLineTests {
             
             // Calculate distance between consecutive waypoints
             let segmentResult = geodesic.inverse(
-                latitude1: prev.latitude, longitude1: prev.longitude,
-                latitude2: curr.latitude, longitude2: curr.longitude
+                startLatitude: prev.latitude,
+                startLongitude: prev.longitude,
+                endLatitude: curr.latitude,
+                endLongitude: curr.longitude
             )
             
             // Should be approximately 10% of total distance

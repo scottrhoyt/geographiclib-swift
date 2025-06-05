@@ -81,13 +81,13 @@ print("Destination: \(direct.latitude)°, \(direct.longitude)°")
 
 // Solve the inverse problem: given two points, find distance and azimuths
 let inverse = geodesic.inverse(
-    latitude1: 40.64,     // JFK Airport
-    longitude1: -73.78,
-    latitude2: 1.36,      // Singapore Changi Airport
-    longitude2: 103.99
+    startLatitude: 40.64,     // JFK Airport
+    startLongitude: -73.78,
+    endLatitude: 1.36,      // Singapore Changi Airport
+    endLongitude: 103.99
 )
 print("Distance: \(inverse.distance) meters")
-print("Initial azimuth: \(inverse.azimuth1)°")
+print("Initial azimuth: \(inverse.startAzimuth)°")
 ```
 
 ### Using Different Ellipsoids

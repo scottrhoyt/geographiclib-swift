@@ -11,8 +11,8 @@ import CGeographicLib
 /// A geodesic (shortest path) on an ellipsoid of revolution.
 ///
 /// This struct provides methods for solving various geodesic problems:
-/// - Direct problem: Given a starting point, azimuth, and distance, find the endpoint
-/// - Inverse problem: Given two points, find the azimuth and distance between them
+/// - **Direct problem**: Given a starting point, azimuth, and distance, find the end point
+/// - **Inverse problem**: Given two points, find the azimuth and distance between them
 ///
 /// The default ellipsoid is WGS-84, but custom ellipsoids can be specified.
 public struct Geodesic: Sendable {
@@ -52,36 +52,49 @@ public struct Geodesic: Sendable {
 public extension Geodesic {
     /// Result of a direct geodesic calculation
     struct DirectResult {
-        /// Latitude of the destination point in degrees
+        /// Latitude of the end point in degrees
         public let latitude: Double
         
-        /// Longitude of the destination point in degrees
+        /// Longitude of the end point in degrees
         public let longitude: Double
         
-        /// Forward azimuth at the destination point in degrees
+        /// Forward azimuth at the end point in degrees
         public let azimuth: Double
     }
     
     /// Solve the direct geodesic problem.
     ///
-    /// Given a starting point, initial azimuth, and distance, calculate the destination point and final azimuth.
+    /// Given a starting point, initial azimuth, and distance, calculate the end point and final azimuth.
     ///
     /// - Parameters:
     ///   - latitude: Starting latitude in degrees [-90, 90]
     ///   - longitude: Starting longitude in degrees [-180, 180]
     ///   - azimuth: Initial azimuth in degrees [-180, 180]
     ///   - distance: Distance in meters (can be negative)
-    /// - Returns: The destination point and final azimuth
+    /// - Returns: A ``DirectResult`` containing the end point data.
     func direct(latitude: Double, longitude: Double, azimuth: Double, distance: Double) -> DirectResult {
-        var latitude2: Double = 0
-        var longitude2: Double = 0
-        var azimuth2: Double = 0
+        var endLatitude: Double = 0
+        var endLongitude: Double = 0
+        var endAzimuth: Double = 0
         
         withUnsafePointer(to: geod) { geodPtr in
-            geod_direct(geodPtr, latitude, longitude, azimuth, distance, &latitude2, &longitude2, &azimuth2)
+            geod_direct(
+                geodPtr,
+                latitude,
+                longitude,
+                azimuth,
+                distance,
+                &endLatitude,
+                &endLongitude,
+                &endAzimuth
+            )
         }
         
-        return DirectResult(latitude: latitude2, longitude: longitude2, azimuth: azimuth2)
+        return DirectResult(
+            latitude: endLatitude,
+            longitude: endLongitude,
+            azimuth: endAzimuth
+        )
     }
 }
 
@@ -93,11 +106,11 @@ public extension Geodesic {
         /// Distance between the two points in meters
         public let distance: Double
         
-        /// Forward azimuth at the first point in degrees
-        public let azimuth1: Double
+        /// Forward azimuth at the start point in degrees
+        public let startAzimuth: Double
         
-        /// Forward azimuth at the second point in degrees
-        public let azimuth2: Double
+        /// Forward azimuth at the end point in degrees
+        public let endAzimuth: Double
     }
     
     /// Solve the inverse geodesic problem.
@@ -105,20 +118,20 @@ public extension Geodesic {
     /// Given two points, calculate the distance and azimuths between them.
     ///
     /// - Parameters:
-    ///   - latitude1: First point latitude in degrees [-90, 90]
-    ///   - longitude1: First point longitude in degrees [-180, 180]
-    ///   - latitude2: Second point latitude in degrees [-90, 90]
-    ///   - longitude2: Second point longitude in degrees [-180, 180]
-    /// - Returns: The distance and azimuths between the points
-    func inverse(latitude1: Double, longitude1: Double, latitude2: Double, longitude2: Double) -> InverseResult {
+    ///   - startLatitude: First point latitude in degrees [-90, 90]
+    ///   - startLongitude: First point longitude in degrees [-180, 180]
+    ///   - endLatitude: Second point latitude in degrees [-90, 90]
+    ///   - endLongitude: Second point longitude in degrees [-180, 180]
+    /// - Returns: An ``InverseResult`` containing information about the geodesic
+    func inverse(startLatitude: Double, startLongitude: Double, endLatitude: Double, endLongitude: Double) -> InverseResult {
         var distance: Double = 0
-        var azimuth1: Double = 0
-        var azimuth2: Double = 0
+        var startAzimuth: Double = 0
+        var endAzimuth: Double = 0
         
         withUnsafePointer(to: geod) { geodPtr in
-            geod_inverse(geodPtr, latitude1, longitude1, latitude2, longitude2, &distance, &azimuth1, &azimuth2)
+            geod_inverse(geodPtr, startLatitude, startLongitude, endLatitude, endLongitude, &distance, &startAzimuth, &endAzimuth)
         }
         
-        return InverseResult(distance: distance, azimuth1: azimuth1, azimuth2: azimuth2)
+        return InverseResult(distance: distance, startAzimuth: startAzimuth, endAzimuth: endAzimuth)
     }
 }

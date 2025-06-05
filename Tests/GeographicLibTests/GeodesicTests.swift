@@ -33,12 +33,17 @@ struct GeodesicTests {
         let geodesic = Geodesic()
         
         // JFK coordinates
-        let lat1 = 40.64
-        let lon1 = -73.78
+        let latitude = 40.64
+        let longitude = -73.78
         let azimuth = 45.0
         let distance = 10_000_000.0 // 10,000 km
         
-        let result = geodesic.direct(latitude: lat1, longitude: lon1, azimuth: azimuth, distance: distance)
+        let result = geodesic.direct(
+            latitude: latitude,
+            longitude: longitude,
+            azimuth: azimuth,
+            distance: distance
+        )
         
         // Check that we got valid results
         #expect(result.latitude >= -90 && result.latitude <= 90)
@@ -56,19 +61,24 @@ struct GeodesicTests {
         let geodesic = Geodesic()
         
         // JFK coordinates
-        let lat1 = 40.64
-        let lon1 = -73.78
+        let startLatitude = 40.64
+        let startLongitude = -73.78
         
         // Singapore Changi Airport coordinates
-        let lat2 = 1.36
-        let lon2 = 103.99
+        let endLatitude = 1.36
+        let endLongitude = 103.99
         
-        let result = geodesic.inverse(latitude1: lat1, longitude1: lon1, latitude2: lat2, longitude2: lon2)
+        let result = geodesic.inverse(
+            startLatitude: startLatitude,
+            startLongitude: startLongitude,
+            endLatitude: endLatitude,
+            endLongitude: endLongitude
+        )
         
         // Check that we got valid results
         #expect(result.distance > 0)
-        #expect(result.azimuth1 >= -180 && result.azimuth1 <= 180)
-        #expect(result.azimuth2 >= -180 && result.azimuth2 <= 180)
+        #expect(result.startAzimuth >= -180 && result.startAzimuth <= 180)
+        #expect(result.endAzimuth >= -180 && result.endAzimuth <= 180)
         
         // Expected approximate distance from the C library documentation
         #expect(abs(result.distance - 15.3e6) < 0.1e6) // ~15,300 km
@@ -78,40 +88,50 @@ struct GeodesicTests {
     func testDirectInverseConsistency() {
         let geodesic = Geodesic()
         
-        let lat1 = 40.64
-        let lon1 = -73.78
-        let azimuth1 = 45.0
+        let latitude = 40.64
+        let longitude = -73.78
+        let azimuth = 45.0
         let distance = 1_000_000.0 // 1000 km
         
         // Perform direct calculation
-        let directResult = geodesic.direct(latitude: lat1, longitude: lon1, azimuth: azimuth1, distance: distance)
+        let directResult = geodesic.direct(
+            latitude: latitude,
+            longitude: longitude,
+            azimuth: azimuth,
+            distance: distance
+        )
         
         // Perform inverse calculation using the result
         let inverseResult = geodesic.inverse(
-            latitude1: lat1,
-            longitude1: lon1,
-            latitude2: directResult.latitude,
-            longitude2: directResult.longitude
+            startLatitude: latitude,
+            startLongitude: longitude,
+            endLatitude: directResult.latitude,
+            endLongitude: directResult.longitude
         )
         
         // Check consistency
         #expect(abs(inverseResult.distance - distance) < 0.001) // within 1mm
-        #expect(abs(inverseResult.azimuth1 - azimuth1) < 1e-10) // very small angle difference
+        #expect(abs(inverseResult.startAzimuth - azimuth) < 1e-10) // very small angle difference
     }
     
     @Test("Negative distance")
     func testNegativeDistance() {
         let geodesic = Geodesic()
         
-        let lat1 = 0.0
-        let lon1 = 0.0
-        let azimuth1 = 90.0
+        let latitude = 0.0
+        let longitude = 0.0
+        let azimuth = 90.0
         let distance = -1_000_000.0 // -1000 km
         
-        let result = geodesic.direct(latitude: lat1, longitude: lon1, azimuth: azimuth1, distance: distance)
+        let result = geodesic.direct(
+            latitude: latitude,
+            longitude: longitude,
+            azimuth: azimuth,
+            distance: distance
+        )
         
         // Should go in the opposite direction
-        #expect(result.longitude < lon1)
+        #expect(result.longitude < longitude)
     }
     
     @Test("Antipodal points")
@@ -119,7 +139,12 @@ struct GeodesicTests {
         let geodesic = Geodesic()
         
         // North pole to South pole
-        let result = geodesic.inverse(latitude1: 90.0, longitude1: 0.0, latitude2: -90.0, longitude2: 0.0)
+        let result = geodesic.inverse(
+            startLatitude: 90.0,
+            startLongitude: 0.0,
+            endLatitude: -90.0,
+            endLongitude: 0.0
+        )
         
         // For WGS-84 ellipsoid, the meridional distance from pole to pole
         // The distance should be close to half the meridional circumference
