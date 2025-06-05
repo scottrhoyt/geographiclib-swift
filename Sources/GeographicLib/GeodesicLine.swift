@@ -82,7 +82,7 @@ public struct GeodesicLine: Sendable {
     /// Compute a position along the geodesic line.
     ///
     /// - Parameter distance: Distance from the starting point in meters
-    /// - Returns: The position and azimuth at the given distance
+    /// - Returns: A ``PositionResult`` withm the position and azimuth at the given distance
     public func position(distance: Double) -> PositionResult {
         var latitude: Double = 0
         var longitude: Double = 0

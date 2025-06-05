@@ -106,10 +106,10 @@ public extension Geodesic {
         /// Distance between the two points in meters
         public let distance: Double
         
-        /// Forward azimuth at the start point in degrees
+        /// Forward azimuth at the start point in degrees, [-180, 180]
         public let startAzimuth: Double
         
-        /// Forward azimuth at the end point in degrees
+        /// Forward azimuth at the end point in degrees, [-180, 180]
         public let endAzimuth: Double
     }
     
