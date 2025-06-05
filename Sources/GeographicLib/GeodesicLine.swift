@@ -202,20 +202,25 @@ public extension Geodesic {
     /// Create a geodesic line from an inverse problem.
     ///
     /// - Parameters:
-    ///   - latitude1: First point latitude in degrees [-90, 90]
-    ///   - longitude1: First point longitude in degrees [-180, 180]
-    ///   - latitude2: Second point latitude in degrees [-90, 90]
-    ///   - longitude2: Second point longitude in degrees [-180, 180]
+    ///   - startLatitude: First point latitude in degrees [-90, 90]
+    ///   - startLongitude: First point longitude in degrees [-180, 180]
+    ///   - endLatitude: Second point latitude in degrees [-90, 90]
+    ///   - endLongitude: Second point longitude in degrees [-180, 180]
     ///   - capabilities: Capabilities for calculations
     /// - Returns: A geodesic line connecting the two points
-    func inverseLine(latitude1: Double, longitude1: Double, latitude2: Double, longitude2: Double,
-                     capabilities: GeodesicCapability = .standard) -> GeodesicLine {
+    func inverseLine(
+        startLatitude: Double,
+        startLongitude: Double,
+        endLatitude: Double,
+        endLongitude: Double,
+        capabilities: GeodesicCapability = .standard
+    ) -> GeodesicLine {
         var line = geod_geodesicline()
         withUnsafePointer(to: geod) { geodPtr in
-            geod_inverseline(&line, geodPtr, latitude1, longitude1, latitude2, longitude2, capabilities.rawValue)
+            geod_inverseline(&line, geodPtr, startLatitude, startLongitude, endLatitude, endLongitude, capabilities.rawValue)
         }
         
-        var result = GeodesicLine(geodesic: self, latitude: latitude1, longitude: longitude1,
+        var result = GeodesicLine(geodesic: self, latitude: startLatitude, longitude: startLongitude,
                                 azimuth: 0, capabilities: capabilities)
         result.line = line
         return result

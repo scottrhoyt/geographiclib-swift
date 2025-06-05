@@ -111,8 +111,10 @@ For efficient calculations of multiple points along a geodesic:
 ```swift
 // Create a geodesic line
 let line = geodesic.inverseLine(
-    latitude1: 40.64, longitude1: -73.78,  // JFK
-    latitude2: 1.36, longitude2: 103.99     // Singapore
+    startLatitude: 40.64, 
+    startLongitude: -73.78,  // JFK
+    endlatitude: 1.36, 
+    endLongitude: 103.99     // Singapore
 )
 
 // Calculate waypoints

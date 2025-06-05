@@ -57,22 +57,27 @@ struct GeodesicLineTests {
         let geodesic = Geodesic()
         
         // JFK to Singapore
-        let lat1 = 40.64
-        let lon1 = -73.78
-        let lat2 = 1.36
-        let lon2 = 103.99
+        let startLatitude = 40.64
+        let startLongitude = -73.78
+        let endLatitude = 1.36
+        let endLongitude = 103.99
         
-        let line = geodesic.inverseLine(latitude1: lat1, longitude1: lon1, latitude2: lat2, longitude2: lon2)
+        let line = geodesic.inverseLine(
+            startLatitude: startLatitude,
+            startLongitude: startLongitude,
+            endLatitude: endLatitude,
+            endLongitude: endLongitude
+        )
         
-        #expect(line.latitude == lat1)
-        #expect(line.longitude == lon1)
+        #expect(line.latitude == startLatitude)
+        #expect(line.longitude == startLongitude)
         
         // The line should connect the two points
         let inverseResult = geodesic.inverse(
-            startLatitude: lat1,
-            startLongitude: lon1,
-            endLatitude: lat2,
-            endLongitude: lon2
+            startLatitude: startLatitude,
+            startLongitude: startLongitude,
+            endLatitude: endLatitude,
+            endLongitude: endLongitude
         )
         #expect(abs(line.distance - inverseResult.distance) < 0.001)
         #expect(abs(line.azimuth - inverseResult.startAzimuth) < 1e-10)
@@ -84,8 +89,10 @@ struct GeodesicLineTests {
         
         // Create line from JFK to Singapore
         let line = geodesic.inverseLine(
-            latitude1: 40.64, longitude1: -73.78,
-            latitude2: 1.36, longitude2: 103.99
+            startLatitude: 40.64,
+            startLongitude: -73.78,
+            endLatitude: 1.36,
+            endLongitude: 103.99
         )
         
         // Generate 11 waypoints (0%, 10%, ..., 100%)
